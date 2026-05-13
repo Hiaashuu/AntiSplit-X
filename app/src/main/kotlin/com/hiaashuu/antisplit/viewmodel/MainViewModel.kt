@@ -92,8 +92,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 return@launch
             }
             addLog("Reading & Extracting: $fileName")
-            
-            // Ultra-fast extraction skipping intermediate full file zip
+
             val cacheFile = FileUtil.uriToExtractedDir(context, uri, fileName)
             if (cacheFile == null || !cacheFile.exists()) {
                 _uiState.value = UiState.Error("Failed to read file — check storage permission.")
@@ -138,8 +137,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val context = getApplication<Application>()
             val appLabel = runCatching { context.packageManager.getApplicationLabel(appInfo).toString() }.getOrDefault(appInfo.packageName)
             addLog("Loading installed splits for: $appLabel")
-            
-            // Bypass Zip repackaging - Use native folder directly
+
             val sourceDir = File(appInfo.sourceDir ?: "")
             val parentDir = sourceDir.parentFile
             if (parentDir == null || !parentDir.exists() || !parentDir.isDirectory) {
@@ -264,8 +262,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             var mergeInput = cacheFile
             var createdTempDir = false
-            
-            // Ultra-fast split filtering 
+
             if (selectedSplitNames != null) {
                 if (isInstalledApp()) {
                     addLog("Copying selected splits to temporary cache...")
@@ -347,7 +344,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     addLog("Signing exception: ${e.message}")
                     false
                 }
-                
+
                 if (wasSigned && tempSignedApk.exists()) {
                     finalReadyApk = tempSignedApk
                 } else {
@@ -355,7 +352,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            // Move final ready APK to output
             var actualOutputFile = outputFile
             try {
                 if (actualOutputFile.exists()) actualOutputFile.delete()
@@ -375,14 +371,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            // Cleanup temp files
             if (createdTempDir) mergeInput.deleteRecursively()
             if (tempMergedApk.exists() && tempMergedApk != actualOutputFile) tempMergedApk.delete()
             if (tempSignedApk.exists() && tempSignedApk != actualOutputFile) tempSignedApk.delete()
 
             _uiState.value = UiState.Processing(1f)
-            
-            // Clean up original extracted cache 
+
             if (!isInstalledApp()) {
                 currentCacheFile?.deleteRecursively()
             }
