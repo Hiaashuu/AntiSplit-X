@@ -494,7 +494,6 @@ private fun MainContentView(
                     Spacer(Modifier.height(16.dp))
                 }
 
-                // ── IMPROVED DropZoneCard ──────────────────────────────────────────
                 DropZoneCard(uiState = uiState) { pickFileLauncher.launch(arrayOf("*/*")) }
 
                 Spacer(Modifier.height(20.dp))
@@ -513,7 +512,6 @@ private fun MainContentView(
                 }
                 Spacer(Modifier.height(20.dp))
 
-                // ── IMPROVED "Choose from Installed" Button ────────────────────────
                 Button(
                     onClick   = { navController.navigate(Screen.AppList.route) },
                     modifier  = Modifier.fillMaxWidth().height(62.dp),
@@ -575,9 +573,6 @@ private fun MainContentView(
     }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-//  IMPROVED DropZoneCard  (uniform card bg — no inner rectangle artifact)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 @Composable
 private fun DropZoneCard(uiState: UiState, onPickFile: () -> Unit) {
     val borderColor by animateColorAsState(
@@ -589,7 +584,6 @@ private fun DropZoneCard(uiState: UiState, onPickFile: () -> Unit) {
         label = "borderColor"
     )
 
-    // One uniform surface — no inner gradient that creates a rectangle artifact
     val cardBg  = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f)
     val chipsBg = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
 
@@ -603,7 +597,7 @@ private fun DropZoneCard(uiState: UiState, onPickFile: () -> Unit) {
             modifier            = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // ── Tap area — NO extra background, inherits card colour ──────────
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -628,7 +622,7 @@ private fun DropZoneCard(uiState: UiState, onPickFile: () -> Unit) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Icon in a soft circle
+
                         Box(
                             modifier = Modifier
                                 .size(76.dp)
@@ -665,12 +659,11 @@ private fun DropZoneCard(uiState: UiState, onPickFile: () -> Unit) {
                 }
             }
 
-            // ── Format chips — slightly tinted strip at bottom of card ────────
             HorizontalDivider(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(chipsBg)   // Card clips this to its own rounded corners
+                    .background(chipsBg)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment     = Alignment.CenterVertically
