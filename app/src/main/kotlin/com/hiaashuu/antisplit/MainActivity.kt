@@ -31,22 +31,14 @@ import com.hiaashuu.antisplit.ui.theme.AntiSplitTheme
 import com.hiaashuu.antisplit.util.PermissionUtil
 import com.hiaashuu.antisplit.viewmodel.MainViewModel
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Navigation Routes
-// ─────────────────────────────────────────────────────────────────────────────
 sealed class Screen(val route: String) {
     object Home     : Screen("home")
     object AppList  : Screen("app_list")
     object Settings : Screen("settings")
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MainActivity
-// ─────────────────────────────────────────────────────────────────────────────
 class MainActivity : ComponentActivity() {
 
-    // Hoisted outside setContent so onNewIntent can update it and Compose
-    // will recompose automatically when the value changes.
     private val pendingUriState: MutableState<Uri?> = mutableStateOf(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +48,7 @@ class MainActivity : ComponentActivity() {
         pendingUriState.value = resolveIncomingUri(intent)
 
         setContent {
-            // Single ViewModel shared across all screens
+
             val viewModel: MainViewModel = viewModel()
             val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
             val pendingUri by pendingUriState
@@ -107,8 +99,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Called when activity is already running and receives a new intent
-    // (launchMode="singleTop" in manifest ensures this instead of re-create)
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
@@ -127,9 +117,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// NavHost
-// ─────────────────────────────────────────────────────────────────────────────
 @Composable
 private fun AntiSplitNavHost(
     navController : NavHostController,
