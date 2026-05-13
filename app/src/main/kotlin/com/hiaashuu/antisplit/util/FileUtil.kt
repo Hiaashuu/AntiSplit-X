@@ -76,14 +76,14 @@ object FileUtil {
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs()
             }
-            
+
             var apkCount = 0
             context.contentResolver.openInputStream(uri)?.use { input ->
                 ZipInputStream(input).use { zis ->
                     var entry = zis.nextEntry
                     while (entry != null) {
                         val name = entry.name
-                        // Exclude META-INF and strictly extract only actual split .apk files
+
                         if (!entry.isDirectory && name.endsWith(".apk", ignoreCase = true) && !name.contains("META-INF")) {
                             val safeName = name.substringAfterLast('/')
                             val outFile = File(cacheDir, safeName)
@@ -98,11 +98,11 @@ object FileUtil {
                     }
                 }
             }
-            
+
             if (apkCount > 0) {
                 return cacheDir
             } else {
-                // Fallback for direct plain APKs or zip files not matching split architecture
+
                 cacheDir.deleteRecursively()
                 val directCacheDir = File(context.cacheDir, "antisplit_input_direct_${System.currentTimeMillis()}")
                 directCacheDir.mkdirs()
@@ -134,12 +134,12 @@ object FileUtil {
         suffix: String = "_antisplit"
     ): File {
         val outputName = buildOutputName(sourceFileName, suffix)
-        
+
         val defaultDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "AntiSplit")
         if (!defaultDir.exists()) {
             defaultDir.mkdirs()
         }
-        
+
         return when (outputDirMode) {
             OutputDirMode.DOWNLOADS -> File(defaultDir, outputName)
 
@@ -174,7 +174,7 @@ object FileUtil {
                         File(defaultDir, outputName)
                     }
                 } else {
-                    File(defaultDir, outputName) // fallback for installed apps
+                    File(defaultDir, outputName)
                 }
             }
         }
@@ -210,7 +210,7 @@ object FileUtil {
 
     fun clearCache(context: Context) {
         try {
-            // Delete all dynamically generated extraction caches and outputs
+
             context.cacheDir.listFiles()?.forEach { file ->
                 if (file.name.startsWith("antisplit_")) {
                     file.deleteRecursively()
