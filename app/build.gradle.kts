@@ -107,7 +107,6 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation("com.github.MuntashirAkon:apksig-android:4.4.0")
-    
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
