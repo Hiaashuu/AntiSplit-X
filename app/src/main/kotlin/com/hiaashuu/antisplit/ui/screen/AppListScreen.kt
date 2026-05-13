@@ -68,16 +68,16 @@ fun AppListScreen(
         }
         withContext(Dispatchers.IO) {
             val allApps = DeviceSpecsUtil.getInstalledSplitApps(pm)
-            
+
             val sortedApps = allApps.sortedByDescending { appInfo ->
                 runCatching { pm.getPackageInfo(appInfo.packageName, 0).firstInstallTime }.getOrDefault(0L)
             }
-            
-            userApps = sortedApps.filter { 
-                (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 && (it.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0 
+
+            userApps = sortedApps.filter {
+                (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 && (it.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0
             }
-            systemApps = sortedApps.filter { 
-                (it.flags and ApplicationInfo.FLAG_SYSTEM) != 0 || (it.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0 
+            systemApps = sortedApps.filter {
+                (it.flags and ApplicationInfo.FLAG_SYSTEM) != 0 || (it.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
             }
         }
         isLoading = false
@@ -113,9 +113,9 @@ fun AppListScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { 
+                    IconButton(onClick = {
                         isRefreshing = true
-                        refreshTrigger++ 
+                        refreshTrigger++
                     }) {
                         Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
                     }
