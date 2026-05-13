@@ -79,7 +79,7 @@ fun AntiSplitTheme(
         darkTheme -> DarkColors
         else -> LightColors
     }
-    
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
