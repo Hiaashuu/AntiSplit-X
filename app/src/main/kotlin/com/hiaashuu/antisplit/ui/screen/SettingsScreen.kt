@@ -37,6 +37,8 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.VpnKey
@@ -195,6 +197,24 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(Modifier.height(8.dp))
+
+            GitHubCreditCard(onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Hiaashuu/AntiSplit-X"))
+                context.startActivity(intent)
+            })
+
+            CategoryHeader("ABOUT & UPDATES")
+            SettingsCard {
+                SettingsItem(
+                    icon     = Icons.Filled.SystemUpdate,
+                    title    = "Check for Updates",
+                    subtitle = "View the latest releases on GitHub",
+                    onClick  = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Hiaashuu/AntiSplit-X/releases"))
+                        context.startActivity(intent)
+                    }
+                )
+            }
 
             CategoryHeader("PREFERENCES")
             SettingsCard {
@@ -717,6 +737,49 @@ private fun SettingsItem(
         if (trailing != null) {
             Spacer(Modifier.width(8.dp))
             trailing()
+        }
+    }
+}
+
+@Composable
+private fun GitHubCreditCard(onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape    = RoundedCornerShape(20.dp),
+        border   = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
+        colors   = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+            contentColor   = MaterialTheme.colorScheme.onSurface
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.Star,
+                    contentDescription = "GitHub",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+            Spacer(Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Support AntiSplit-X", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(2.dp))
+                Text("Developed by Hiaashuu. Tap to drop a star on GitHub!", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
     }
 }
