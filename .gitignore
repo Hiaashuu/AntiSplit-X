@@ -1,0 +1,17 @@
+# Security — NEVER push these
+*.jks
+*.keystore
+*.p12
+*.pfx
+
+# Build outputs
+.gradle/
+build/
+
+# IDE files
+.idea/
+.acside/
+*.iml
+*.bak
+.DS_Store
+Thumbs.db
