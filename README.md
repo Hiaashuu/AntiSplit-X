@@ -28,11 +28,9 @@ Built entirely from scratch using modern **Kotlin** and **Jetpack Compose (Mater
 
 ## 📸 Screenshots
 
-*(Add your screenshots here by replacing the placeholder links!)*
-
-|<img src="https://github.com/Hiaashuu/AntiSplit-X/blob/main/Screenshots/AppList.jpg" width="250">|<img src="https://via.placeholder.com/250x500.png?text=Merge+Terminal" width="250">|<img src="https://via.placeholder.com/250x500.png?text=Settings" width="250">|
-|:---:|:---:|:---:|
-| **Home Screen** | **Live Terminal Merging** | **Advanced Settings** |
+|<img src="https://raw.githubusercontent.com/Hiaashuu/AntiSplit-X/main/Screenshots/Home.jpg" width="220">|<img src="https://raw.githubusercontent.com/Hiaashuu/AntiSplit-X/main/Screenshots/AppList.jpg" width="220">|<img src="https://raw.githubusercontent.com/Hiaashuu/AntiSplit-X/main/Screenshots/Settings1.jpg" width="220">|<img src="https://raw.githubusercontent.com/Hiaashuu/AntiSplit-X/main/Screenshots/Settings2.jpg" width="220">|
+|:---:|:---:|:---:|:---:|
+| **Home Screen** | **Installed Apps List** | **Settings (Part 1)** | **Settings (Part 2)** |
 
 ---
 
