@@ -70,12 +70,12 @@ object SignUtil {
     fun verifyKeystore(context: Context, customUri: String, alias: String, ksPass: String, keyPass: String): String {
         try {
             val bytes = context.contentResolver.openInputStream(Uri.parse(customUri))?.readBytes() ?: return "Could not read file from storage"
-            
+
             val headStr = bytes.take(30).toByteArray().toString(Charsets.UTF_8)
             if (headStr.contains("BEGIN") || headStr.contains("PRIVATE KEY")) {
                 return "This looks like a raw Key (.key, .pem). Please use 'Custom Keys' section instead of Keystore."
             }
-            
+
             val errors = mutableSetOf<String>()
             val types = listOf("PKCS12", "JKS", "BKS")
             val providers = java.security.Security.getProviders()
@@ -111,9 +111,9 @@ object SignUtil {
                     }
                 }
             }
-            
+
             val combinedError = errors.joinToString(" | ")
-            
+
             if (combinedError.contains("Wrong version of key store") || combinedError.contains("not a PKCS12")) {
                 return "Incompatible format. Android natively limits JKS support. Convert to PKCS12 (.p12) or try using 'Custom Keys'."
             }
@@ -123,7 +123,7 @@ object SignUtil {
             if (combinedError.contains("Cannot recover key") || combinedError.contains("Get Key failed")) {
                 return "Incorrect Key password or Alias."
             }
-            
+
             return combinedError.take(200).takeIf { it.isNotBlank() } ?: "Invalid keystore format or corrupted file"
         } catch (e: Throwable) {
             return "Fatal verification error: ${e.message}"
@@ -134,19 +134,19 @@ object SignUtil {
         try {
             val pk8Bytes = context.contentResolver.openInputStream(Uri.parse(pk8Uri))?.readBytes() ?: return null
             val keySpec = PKCS8EncodedKeySpec(pk8Bytes)
-            
+
             var privateKey: PrivateKey? = null
             val algorithms = listOf("RSA", "EC", "DSA")
-            
+
             for (algo in algorithms) {
                 try {
                     privateKey = KeyFactory.getInstance(algo).generatePrivate(keySpec)
                     if (privateKey != null) break
                 } catch (e: Throwable) {
-                    // Try next algorithm
+
                 }
             }
-            
+
             if (privateKey == null) {
                 logListener("Failed to parse private key (unsupported algorithm or invalid PKCS8 format).")
                 return null
@@ -156,7 +156,7 @@ object SignUtil {
             val cert = context.contentResolver.openInputStream(Uri.parse(pemUri))?.use {
                 cf.generateCertificate(it) as X509Certificate
             } ?: return null
-            
+
             return privateKey to listOf(cert)
         } catch (e: Throwable) {
             logListener("Error loading key files: ${e.message}")
@@ -174,7 +174,7 @@ object SignUtil {
         val useDefault = !isCustom || customUri.isBlank()
         val types = listOf("PKCS12", "JKS", "BKS")
         val providers = java.security.Security.getProviders()
-        
+
         for (type in types) {
             try {
                 val ks = KeyStore.getInstance(type)
@@ -183,18 +183,18 @@ object SignUtil {
                 } else {
                     context.contentResolver.openInputStream(Uri.parse(customUri))
                 }
-                
-                stream?.use { 
+
+                stream?.use {
                     val pass = if (useDefault) "android" else ksPass
-                    ks.load(it, pass.toCharArray()) 
+                    ks.load(it, pass.toCharArray())
                 } ?: continue
-                
+
                 val currentAlias = if (useDefault) "androiddebugkey" else alias
                 val currentKeyPass = if (useDefault) "android" else keyPass
-                
+
                 val key = ks.getKey(currentAlias, currentKeyPass.toCharArray()) as? PrivateKey ?: continue
                 val chain = ks.getCertificateChain(currentAlias)?.map { it as X509Certificate }?.takeIf { it.isNotEmpty() } ?: continue
-                    
+
                 return Pair(key, chain)
             } catch (e: Throwable) {
                 if (!useDefault) {
@@ -210,21 +210,21 @@ object SignUtil {
                     } else {
                         context.contentResolver.openInputStream(Uri.parse(customUri))
                     }
-                    
-                    stream?.use { 
+
+                    stream?.use {
                         val pass = if (useDefault) "android" else ksPass
-                        ks.load(it, pass.toCharArray()) 
+                        ks.load(it, pass.toCharArray())
                     } ?: continue
-                    
+
                     val currentAlias = if (useDefault) "androiddebugkey" else alias
                     val currentKeyPass = if (useDefault) "android" else keyPass
-                    
+
                     val key = ks.getKey(currentAlias, currentKeyPass.toCharArray()) as? PrivateKey ?: continue
                     val chain = ks.getCertificateChain(currentAlias)?.map { it as X509Certificate }?.takeIf { it.isNotEmpty() } ?: continue
-                        
+
                     return Pair(key, chain)
                 } catch (e: Throwable) {
-                    // Ignore explicit provider errors to prevent console spam
+
                 }
             }
         }
@@ -256,7 +256,6 @@ object SignUtil {
 
         val apkSignerBuilder = builderClass.getDeclaredConstructor(List::class.java).newInstance(listOf(signerConfig))
 
-        // Delete output APK if it exists to completely prevent FileAlreadyExistsException (EEXIST)
         if (outputApk.exists()) {
             outputApk.delete()
         }
