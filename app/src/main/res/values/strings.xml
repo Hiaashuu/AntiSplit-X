@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">AntiSplit-X</string>
+
+    
+    <string name="pick_file">Select Split APK File</string>
+    <string name="supported_formats">Supports .apks · .xapk · .apkm</string>
+    <string name="or_divider">or</string>
+    <string name="select_from_installed">Select from Installed Apps</string>
+    <string name="drop_hint">Tap to browse or receive a file via Share</string>
+
+    
+    <string name="settings">Settings</string>
+    <string name="installed_apps">Installed Split Apps</string>
+    <string name="back">Back</string>
+
+    
+    <string name="select_splits_title">Select Splits to Include</string>
+    <string name="select_all">Select All</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="merge">Merge</string>
+    <string name="cancel">Cancel</string>
+
+    
+    <string name="processing_title">Merging APK…</string>
+    <string name="processing_log_label">Log</string>
+    <string name="cancel_merge">Cancel</string>
+
+    
+    <string name="success_title">Merge Successful</string>
+    <string name="error_title">Merge Failed</string>
+    <string name="install">Install</string>
+    <string name="share">Share</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="output_saved_to">Saved to:\n%1$s</string>
+
+    
+    <string name="search_apps">Search apps…</string>
+    <string name="app_list_empty">No split APKs found on this device</string>
+    <string name="loading_apps">Loading installed apps…</string>
+
+    
+    <string name="sign_apk">Sign Output APK</string>
+    <string name="sign_apk_desc">Applies a debug signature after merging</string>
+    <string name="output_dir">Output Directory</string>
+    <string name="output_dir_same">Same as source file</string>
+    <string name="output_dir_downloads">Downloads folder</string>
+    <string name="output_dir_custom">Custom directory…</string>
+    <string name="check_updates">Check for Updates</string>
+    <string name="check_updates_desc">Notify when a new version is available</string>
+    <string name="about">About</string>
+    <string name="version_label">Version %1$s</string>
+
+    
+    <string name="storage_permission_title">Storage Permission</string>
+    <string name="storage_permission_rationale">Required to save the merged APK next to the source file</string>
+    <string name="permission_denied">Permission denied — cannot save file</string>
+
+    
+    <string name="error_no_apks_in_archive">No .apk files found inside the archive</string>
+    <string name="error_invalid_file">Invalid or unsupported file format</string>
+    <string name="error_unknown">An unexpected error occurred</string>
+</resources>
