@@ -190,13 +190,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             addLog("Source: $currentFileName")
 
             val signEnabled = prefs.signApk.first()
-            val suffix = prefs.suffix.first()
+            val suffixPref = prefs.suffix.first()
+            val cleanSuffix = if (suffixPref == "_antisplit") "" else suffixPref
+            val statusSuffix = if (signEnabled) "_signed" else "_unsigned"
             val compressionLevel = prefs.compressionLevel.first()
             val outputDirMode = prefs.outputDirMode.first()
             val customOutputDir = prefs.customOutputDir.first()
             val removeLicenseCheck = prefs.removeLicenseCheck.first()
 
-            val outputName = FileUtil.buildOutputName(currentFileName, suffix)
+            val outputName = FileUtil.buildOutputName(currentFileName, cleanSuffix + statusSuffix)
 
             val shouldPromptSave: Boolean
             val outputFile: File
@@ -350,6 +352,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     addLog("Signing skipped or failed, saving unsigned APK.")
                 }
+            } else {
+                val tempUnsignedApk = File(tempDir, "tmp_unsigned_$outputName")
+                if (tempUnsignedApk.exists()) tempUnsignedApk.delete()
+                val unsigned = SignUtil.unsignApk(tempMergedApk, tempUnsignedApk) { log -> addLog(log) }
+                if (unsigned && tempUnsignedApk.exists()) {
+                    finalReadyApk = tempUnsignedApk
+                } else {
+                    addLog("Unsigning skipped or failed, saving original merged APK.")
+                }
             }
 
             var actualOutputFile = outputFile
@@ -374,6 +385,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             if (createdTempDir) mergeInput.deleteRecursively()
             if (tempMergedApk.exists() && tempMergedApk != actualOutputFile) tempMergedApk.delete()
             if (tempSignedApk.exists() && tempSignedApk != actualOutputFile) tempSignedApk.delete()
+            val tempUnsignedApkCleanup = File(tempDir, "tmp_unsigned_$outputName")
+            if (tempUnsignedApkCleanup.exists() && tempUnsignedApkCleanup != actualOutputFile) tempUnsignedApkCleanup.delete()
 
             _uiState.value = UiState.Processing(1f)
 
