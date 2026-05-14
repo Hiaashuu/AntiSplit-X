@@ -1,7 +1,9 @@
 package com.hiaashuu.antisplit.ui.screen
 
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +34,7 @@ import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.CreateNewFolder
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Palette
@@ -105,7 +108,7 @@ fun SettingsScreen(
     val pemUri              by viewModel.pemUriFlow.collectAsStateWithLifecycle("")
     val outputDirMode       by viewModel.outputDirModeFlow.collectAsStateWithLifecycle(OutputDirMode.DOWNLOADS)
     val customOutputDir     by viewModel.customOutputDirFlow.collectAsStateWithLifecycle("")
-    val suffix              by viewModel.suffixFlow.collectAsStateWithLifecycle("_antisplit")
+    val suffix              by viewModel.suffixFlow.collectAsStateWithLifecycle("")
     val autoSelectSplits    by viewModel.autoSelectSplitsFlow.collectAsStateWithLifecycle(false)
     val autoMergeState      by viewModel.autoMergeFlow.collectAsStateWithLifecycle(false)
     val logUiStyleState     by viewModel.logUiStyleFlow.collectAsStateWithLifecycle("DIALOG")
@@ -126,6 +129,17 @@ fun SettingsScreen(
     var ksPassDraft        by remember { mutableStateOf("") }
     var keyPassDraft       by remember { mutableStateOf("") }
     var verifyLoading      by remember { mutableStateOf(false) }
+
+    val packageInfo = remember(context) {
+        runCatching { context.packageManager.getPackageInfo(context.packageName, 0) }.getOrNull()
+    }
+    val versionName = packageInfo?.versionName ?: "Unknown"
+    val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        packageInfo?.longVersionCode?.toString() ?: "0"
+    } else {
+        @Suppress("DEPRECATION")
+        packageInfo?.versionCode?.toString() ?: "0"
+    }
 
     val keystorePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let {
@@ -205,6 +219,12 @@ fun SettingsScreen(
 
             CategoryHeader("ABOUT & UPDATES")
             SettingsCard {
+                SettingsItem(
+                    icon     = Icons.Filled.Info,
+                    title    = "AntiSplit-X Version",
+                    subtitle = "$versionName (Build $versionCode)"
+                )
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
                 SettingsItem(
                     icon     = Icons.Filled.SystemUpdate,
                     title    = "Check for Updates",
