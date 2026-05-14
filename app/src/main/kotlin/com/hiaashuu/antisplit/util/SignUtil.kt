@@ -15,6 +15,9 @@ import java.security.PrivateKey
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.security.spec.PKCS8EncodedKeySpec
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 
 object SignUtil {
 
@@ -65,6 +68,51 @@ object SignUtil {
             }
             false
         }
+    }
+
+    fun unsignApk(inputApk: File, outputApk: File, logListener: (String) -> Unit): Boolean {
+        return try {
+            logListener("Removing existing signatures (Unsigning)...")
+            ZipFile(inputApk).use { zipFile ->
+                ZipOutputStream(outputApk.outputStream()).use { zos ->
+                    for (entry in zipFile.entries()) {
+                        if (isSignatureFile(entry.name)) continue
+
+                        val newEntry = ZipEntry(entry.name)
+                        newEntry.method = entry.method
+                        if (entry.method == ZipEntry.STORED) {
+                            newEntry.size = entry.size
+                            newEntry.compressedSize = entry.compressedSize
+                            newEntry.crc = entry.crc
+                        }
+
+                        zos.putNextEntry(newEntry)
+                        zipFile.getInputStream(entry).use { it.copyTo(zos) }
+                        zos.closeEntry()
+                    }
+                }
+            }
+            logListener("APK unsigned ✓")
+            true
+        } catch (e: Exception) {
+            logListener("⚠ Failed to unsign APK: ${e.message}")
+            false
+        }
+    }
+
+    private fun isSignatureFile(name: String): Boolean {
+        val upper = name.uppercase()
+        if (!upper.startsWith("META-INF/")) return false
+        if (upper == "META-INF/MANIFEST.MF") return true
+
+        val fileName = upper.substring(9)
+        if (fileName.contains("/")) return false
+
+        return fileName.endsWith(".SF") ||
+               fileName.endsWith(".RSA") ||
+               fileName.endsWith(".DSA") ||
+               fileName.endsWith(".EC") ||
+               fileName.startsWith("SIG-")
     }
 
     fun verifyKeystore(context: Context, customUri: String, alias: String, ksPass: String, keyPass: String): String {
