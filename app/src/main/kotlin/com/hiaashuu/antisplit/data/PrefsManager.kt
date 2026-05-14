@@ -55,7 +55,7 @@ class PrefsManager(private val context: Context) {
     val showSplitDialog: Flow<Boolean> = context.dataStore.data.map { prefs -> prefs[KEY_SHOW_SPLIT_DIALOG] ?: false }
     val autoSelectSplits: Flow<Boolean> = context.dataStore.data.map { prefs -> prefs[KEY_AUTO_SELECT_SPLITS] ?: true }
     val forceMerge: Flow<Boolean> = context.dataStore.data.map { prefs -> prefs[KEY_FORCE_MERGE] ?: false }
-    val suffix: Flow<String> = context.dataStore.data.map { prefs -> prefs[KEY_SUFFIX] ?: "_antisplit" }
+    val suffix: Flow<String> = context.dataStore.data.map { prefs -> prefs[KEY_SUFFIX] ?: "" }
     val compressionLevel: Flow<String> = context.dataStore.data.map { prefs -> prefs[KEY_COMPRESSION_LEVEL] ?: "DEFAULT" }
     val autoMerge: Flow<Boolean> = context.dataStore.data.map { prefs -> prefs[KEY_AUTO_MERGE] ?: true }
     val logUiStyle: Flow<String> = context.dataStore.data.map { prefs -> prefs[KEY_LOG_UI_STYLE] ?: "INLINE" }
