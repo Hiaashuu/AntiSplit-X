@@ -120,7 +120,7 @@ object FileUtil {
         }
     }
 
-    fun buildOutputName(sourceFileName: String, suffix: String = "_antisplit"): String {
+    fun buildOutputName(sourceFileName: String, suffix: String = ""): String {
         val nameWithoutExt = sourceFileName.substringBeforeLast('.').trimEnd()
         return "$nameWithoutExt$suffix.apk"
     }
@@ -131,7 +131,7 @@ object FileUtil {
         sourceFileName: String,
         outputDirMode: OutputDirMode,
         customOutputDirPath: String,
-        suffix: String = "_antisplit"
+        suffix: String = ""
     ): File {
         val outputName = buildOutputName(sourceFileName, suffix)
 
